@@ -1,26 +1,82 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React,{Component} from 'react';
+import {increment,decrement} from "./redux/actions"
+import {connect} from 'react-redux'
 
-function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+ class App extends Component {
+
+    constructor(props){
+        super(props)
+        this.selRef=React.createRef()
+    }
+
+
+    
+    increment=()=>{
+        const selNum=this.selRef.current.value*1
+        this.props.increment(selNum)
+    }
+
+    decrement=()=>{
+        const selNum=this.selRef.current.value*1
+        this.props.increment(selNum)
+    }
+
+    incrementOdd=()=>{
+        const selNum=this.selRef.current.value*1
+        console.log(selNum)
+        if(this.props.num % 2 ===0){
+            this.props.increment(selNum)
+        }
+    }
+
+    incrementAsync=()=>{
+        const selNum=this.selRef.current.value*1
+        console.log(selNum)
+        this.timer=setTimeout(()=>{
+            this.props.increment(selNum)
+        },1500)
+    }
+
+    componentWillUnmount() {
+        clearTimeout(this.timer)
+    }
+
+     render() {
+        return (
+            <div>
+                <p>{this.props.num}</p>
+                <p>
+                    <select ref={this.selRef}>
+                        <option value="1">1</option>
+                        <option value="2">2</option>
+                        <option value="3">3</option>
+                    </select>
+                </p>
+                <p>
+                    <button onClick={this.increment}>增加</button>
+                    <button onClick={this.decrement}>减少</button>
+                    <button onClick={this.incrementOdd}>偶数增加</button>
+                    <button onClick={this.incrementAsync}>异步增加</button>
+                </p>
+            </div>
+        )
+    }
 }
 
-export default App;
+const mapStateToProps=(state)=>{
+    return ({
+        num:state
+    })
+}
+
+const mapDispatchToProps=(dispatch)=>{
+    return {
+        increment:(num)=>dispatch(increment(num)),
+        decrement:(num)=>dispatch(decrement(num))
+    }
+}
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)
