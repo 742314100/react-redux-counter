@@ -9,3 +9,11 @@ export const decrement=(num)=>({
     type:DECREMENT,
     data:num
 })
+
+export const incrementAsync=function (num) {
+    return dispatch=>{
+        setTimeout(()=>{
+            dispatch(increment(num))
+        },1000)
+    }
+}

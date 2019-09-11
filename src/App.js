@@ -1,5 +1,5 @@
 import React,{Component} from 'react';
-import {increment,decrement} from "./redux/actions"
+import {increment,decrement,incrementAsync} from "./redux/actions"
 import {connect} from 'react-redux'
 
  class App extends Component {
@@ -23,7 +23,6 @@ import {connect} from 'react-redux'
 
     incrementOdd=()=>{
         const selNum=this.selRef.current.value*1
-        console.log(selNum)
         if(this.props.num % 2 ===0){
             this.props.increment(selNum)
         }
@@ -31,14 +30,11 @@ import {connect} from 'react-redux'
 
     incrementAsync=()=>{
         const selNum=this.selRef.current.value*1
-        console.log(selNum)
-        this.timer=setTimeout(()=>{
-            this.props.increment(selNum)
-        },1500)
+        this.props.incrementAsync(selNum)
     }
 
     componentWillUnmount() {
-        clearTimeout(this.timer)
+
     }
 
      render() {
@@ -63,7 +59,7 @@ import {connect} from 'react-redux'
     }
 }
 
-const mapStateToProps=(state)=>{
+/*const mapStateToProps=(state)=>{
     return ({
         num:state
     })
@@ -74,9 +70,13 @@ const mapDispatchToProps=(dispatch)=>{
         increment:(num)=>dispatch(increment(num)),
         decrement:(num)=>dispatch(decrement(num))
     }
-}
+}*/
 
 export default connect(
-    mapStateToProps,
-    mapDispatchToProps
+    state=>({num:state}),
+    {
+        increment,
+        decrement,
+        incrementAsync
+    }
 )(App)
